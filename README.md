@@ -1,5 +1,9 @@
 # pg_user
 
+[![Lint](https://github.com/hiperdk/pg_user/actions/workflows/lint.yml/badge.svg?branch=main)](https://github.com/hiperdk/pg_user/actions/workflows/lint.yml)
+[![Release](https://github.com/hiperdk/pg_user/actions/workflows/release.yml/badge.svg?branch=main)](https://github.com/hiperdk/pg_user/actions/workflows/release.yml)
+[![Tests](https://github.com/hiperdk/pg_user/actions/workflows/go.yml/badge.svg?branch=main)](https://github.com/hiperdk/pg_user/actions/workflows/go.yml)
+
 Is a cli application for managing postgres users.
 
 Features
