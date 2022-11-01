@@ -59,7 +59,10 @@ func (conn *DBConn) CreateUser(username string, validDuration time.Duration, rol
 
 	err := conn.AddRole(tx, username, roles)
 	if err != nil {
-		tx.Rollback()
+		err2 := tx.Rollback()
+		if err2 != nil {
+			return "", time.Now(), err2
+		}
 
 		return "", time.Now(), err
 	}
@@ -125,6 +128,9 @@ func (conn *DBConn) GetUser(username string) (*User, error) {
 	var user User
 
 	err := conn.db.Get(&user, "SELECT usename, valuntil FROM pg_catalog.pg_user WHERE usesuper = false AND usename = $1", username)
+	if err != nil {
+		return nil, err
+	}
 
 	validUntil, err := user.ParseValidUntil()
 	if err != nil {
@@ -141,7 +147,10 @@ func (conn *DBConn) AddRole(tx *sqlx.Tx, username string, roles []string) error 
 
 		roleExists, err := conn.RoleExist(role)
 		if err != nil {
-			tx.Rollback()
+			err2 := tx.Rollback()
+			if err2 != nil {
+				return err2
+			}
 
 			return err
 		}

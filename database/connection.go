@@ -18,9 +18,8 @@ type DBConfig struct {
 }
 
 type DBConn struct {
-	Config        *DBConfig
-	db            *sqlx.DB
-	enableLogging bool
+	Config *DBConfig
+	db     *sqlx.DB
 }
 
 func (config *DBConfig) Connect() *DBConn {

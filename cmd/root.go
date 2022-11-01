@@ -26,7 +26,10 @@ func Execute() {
 
 func addRequiredHostFlag(cmd *cobra.Command) {
 	cmd.Flags().String("host", "", "--host database.example.com")
-	cmd.MarkFlagRequired("host")
+	err := cmd.MarkFlagRequired("host")
+	if err != nil {
+		panic(err)
+	}
 }
 
 func givenUserModification(cmd *cobra.Command, args []string, userMustExist bool) (string, *database.DBConn) {
