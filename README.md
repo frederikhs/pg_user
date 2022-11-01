@@ -19,8 +19,8 @@ Features
 
 1. Download the latest release for your distribution or architecture at the [releases page](https://github.com/hiperdk/pg_user/releases/latest). This can only be done while authenticated with github, and thus a simple curl in the terminal is not sufficient.
 
-2. Unzip the compressed binary and move to a location in path
-   3. eg. `$ sudo mv pg_user /usr/local/bin/pg_user`
+2. Move to a location in path
+   - eg. `$ sudo mv pg_user /usr/local/bin/pg_user`
 
 ## Configuration
 
