@@ -17,11 +17,17 @@ var rootCmd = &cobra.Command{
 	Long:  `Cli tool for managing database users across databases`,
 }
 
-func Execute() {
+func Execute(buildVersion string) {
+	rootCmd.Version = buildVersion
+
 	err := rootCmd.Execute()
 	if err != nil {
 		os.Exit(1)
 	}
+}
+
+func init() {
+	rootCmd.PersistentFlags().StringP("output", "o", "", "--output json|table (optional default table)")
 }
 
 func addRequiredHostFlag(cmd *cobra.Command) {
@@ -77,5 +83,30 @@ func givenUserModification(cmd *cobra.Command, args []string, userMustExist bool
 	}
 
 	return username, conn
+}
 
+type OutputType string
+
+const (
+	OutputTypeTable = "table"
+	OutputTypeJson  = "json"
+)
+
+func getOutputType(cmd *cobra.Command) OutputType {
+	output, err := cmd.Flags().GetString("output")
+	if err != nil {
+		cmd.Println(err)
+		os.Exit(1)
+	}
+
+	if output == "json" {
+		return OutputTypeJson
+	} else if output == "table" || output == "" {
+		return OutputTypeTable
+	} else {
+		cmd.Println(cmd.UsageString())
+		os.Exit(1)
+		// for the compiler to be happy
+		return OutputTypeTable
+	}
 }

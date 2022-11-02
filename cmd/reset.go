@@ -1,9 +1,11 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/spf13/cobra"
 	"os"
+	"strings"
 )
 
 var resetCmd = &cobra.Command{
@@ -25,15 +27,33 @@ var resetCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		cmd.Println(fmt.Sprintf("Successfully reset user password for %s in %s", username, conn.Config.Host))
-		cmd.Println("\ncredentials")
-		cmd.Println("Valid until:", *user.ValidUntil)
-		cmd.Println("Username:", username)
-		cmd.Println("Password:", password)
-		cmd.Println("Hostname:", conn.Config.Host)
-		cmd.Println("Port:", conn.Config.Port)
-		cmd.Println("Database:", conn.Config.Database)
+		output := getOutputType(cmd)
+		if output == OutputTypeJson {
+			outputResetJson(cmd, password)
+		} else if output == OutputTypeTable {
+			cmd.Println(fmt.Sprintf("Successfully reset user password for %s in %s", username, conn.Config.Host))
+			cmd.Println("\ncredentials")
+			cmd.Println("Valid until:", *user.ValidUntil)
+			cmd.Println("Username:", username)
+			cmd.Println("Password:", password)
+			cmd.Println("Hostname:", conn.Config.Host)
+			cmd.Println("Port:", conn.Config.Port)
+			cmd.Println("Database:", conn.Config.Database)
+		}
 	},
+}
+
+func outputResetJson(cmd *cobra.Command, password string) {
+	b, err := json.MarshalIndent(struct {
+		Password string `json:"password"`
+	}{
+		Password: password,
+	}, "", strings.Repeat(" ", 4))
+	if err != nil {
+		panic(err)
+	}
+
+	cmd.Println(string(b))
 }
 
 func init() {

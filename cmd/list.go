@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"encoding/json"
 	"github.com/hiperdk/pg_user/database"
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
@@ -26,17 +27,34 @@ var listCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		listUsersForConnection(conn)
+		users, err := conn.GetAllUsers()
+		if err != nil {
+			cmd.Println(err)
+			os.Exit(1)
+		}
+
+		output := getOutputType(cmd)
+		if output == OutputTypeJson {
+			outputListJson(users, cmd)
+		} else if output == OutputTypeTable {
+			outputListTable(users, cmd)
+		}
 	},
 }
 
-func listUsersForConnection(conn *database.DBConn) {
-	users, err := conn.GetAllUsers()
+func outputListJson(users []database.User, cmd *cobra.Command) {
+	b, err := json.MarshalIndent(users, "", strings.Repeat(" ", 4))
 	if err != nil {
 		panic(err)
 	}
 
-	table := tablewriter.NewWriter(os.Stdout)
+	cmd.Println(string(b))
+}
+
+func outputListTable(users []database.User, cmd *cobra.Command) {
+	out := cmd.OutOrStdout()
+
+	table := tablewriter.NewWriter(out)
 	table.SetHeader([]string{"username", "valid until", "roles"})
 
 	for _, u := range users {

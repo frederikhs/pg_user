@@ -8,10 +8,10 @@ import (
 )
 
 type User struct {
-	Username   string   `db:"usename"`
-	ValidUntil *string  `db:"valuntil"`
-	RolesJson  string   `db:"roles"`
-	Roles      []string `db:"-"`
+	Username   string   `db:"usename" json:"username"`
+	ValidUntil *string  `db:"valuntil" json:"valid_until"`
+	RolesJson  string   `db:"roles" json:"-"`
+	Roles      []string `db:"-" json:"roles"`
 }
 
 func (u *User) ParseValidUntil() (*string, error) {

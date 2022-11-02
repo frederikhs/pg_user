@@ -1,11 +1,14 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/hiperdk/pg_user/database"
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
+	"github.com/tg/pgpass"
 	"os"
+	"strings"
 )
 
 var hostsCmd = &cobra.Command{
@@ -19,17 +22,56 @@ var hostsCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		table := tablewriter.NewWriter(os.Stdout)
-		table.SetHeader([]string{"host", "port", "database", "username"})
-
-		for _, e := range entries {
-			table.Append([]string{
-				e.Hostname, e.Port, e.Database, e.Username,
-			})
+		output := getOutputType(cmd)
+		if output == OutputTypeJson {
+			outputHostsJson(entries, cmd)
+		} else if output == OutputTypeTable {
+			outputHostsTable(entries, cmd)
 		}
-
-		table.Render()
 	},
+}
+
+func outputHostsTable(es []pgpass.Entry, cmd *cobra.Command) {
+	out := cmd.OutOrStdout()
+
+	table := tablewriter.NewWriter(out)
+	table.SetHeader([]string{"host", "port", "database", "username", "password"})
+
+	for _, e := range es {
+		table.Append([]string{
+			e.Hostname, e.Port, e.Database, e.Username, "********",
+		})
+	}
+
+	table.Render()
+}
+
+type Entry struct {
+	Hostname string `json:"hostname"`
+	Port     string `json:"port"`
+	Database string `json:"database"`
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+func outputHostsJson(es []pgpass.Entry, cmd *cobra.Command) {
+	var entries []Entry
+	for _, e := range es {
+		entries = append(entries, Entry{
+			Hostname: e.Hostname,
+			Port:     e.Port,
+			Database: e.Database,
+			Username: e.Username,
+			Password: "********",
+		})
+	}
+
+	b, err := json.MarshalIndent(entries, "", strings.Repeat(" ", 4))
+	if err != nil {
+		panic(err)
+	}
+
+	cmd.Println(string(b))
 }
 
 func init() {

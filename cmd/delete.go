@@ -1,9 +1,11 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/spf13/cobra"
 	"os"
+	"strings"
 )
 
 var deleteCmd = &cobra.Command{
@@ -19,8 +21,26 @@ var deleteCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		cmd.Println(fmt.Sprintf("successfully deleted user %s from %s", username, conn.Config.Host))
+		output := getOutputType(cmd)
+		if output == OutputTypeJson {
+			outputDeleteJson(cmd)
+		} else if output == OutputTypeTable {
+			cmd.Println(fmt.Sprintf("successfully deleted user %s from %s", username, conn.Config.Host))
+		}
 	},
+}
+
+func outputDeleteJson(cmd *cobra.Command) {
+	b, err := json.MarshalIndent(struct {
+		Ok bool `json:"ok"`
+	}{
+		Ok: true,
+	}, "", strings.Repeat(" ", 4))
+	if err != nil {
+		panic(err)
+	}
+
+	cmd.Println(string(b))
 }
 
 func init() {

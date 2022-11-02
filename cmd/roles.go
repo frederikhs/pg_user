@@ -1,10 +1,12 @@
 package cmd
 
 import (
+	"encoding/json"
 	"github.com/hiperdk/pg_user/database"
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
 	"os"
+	"strings"
 )
 
 var rolesCmd = &cobra.Command{
@@ -25,17 +27,33 @@ var rolesCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		listRolesForConnection(conn)
+		roles, err := conn.GetAllRoles()
+		if err != nil {
+			panic(err)
+		}
+
+		output := getOutputType(cmd)
+		if output == OutputTypeJson {
+			outputRolesJson(roles, cmd)
+		} else if output == OutputTypeTable {
+			outputRolesTable(roles, cmd)
+		}
 	},
 }
 
-func listRolesForConnection(conn *database.DBConn) {
-	roles, err := conn.GetAllRoles()
+func outputRolesJson(roles []string, cmd *cobra.Command) {
+	b, err := json.MarshalIndent(roles, "", strings.Repeat(" ", 4))
 	if err != nil {
 		panic(err)
 	}
 
-	table := tablewriter.NewWriter(os.Stdout)
+	cmd.Println(string(b))
+}
+
+func outputRolesTable(roles []string, cmd *cobra.Command) {
+	out := cmd.OutOrStdout()
+
+	table := tablewriter.NewWriter(out)
 	table.SetHeader([]string{"rolename"})
 
 	for _, r := range roles {

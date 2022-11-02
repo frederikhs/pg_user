@@ -1,9 +1,12 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/spf13/cobra"
 	"os"
+	"strings"
+	"time"
 )
 
 var extendCmd = &cobra.Command{
@@ -19,14 +22,32 @@ var extendCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		cmd.Println(fmt.Sprintf("Successfully extended user %s in %s", username, conn.Config.Host))
-		cmd.Println("\ncredentials")
-		cmd.Println("Valid until:", validUntil.Format("2006-01-02"))
-		cmd.Println("Username:", username)
-		cmd.Println("Hostname:", conn.Config.Host)
-		cmd.Println("Port:", conn.Config.Port)
-		cmd.Println("Database:", conn.Config.Database)
+		output := getOutputType(cmd)
+		if output == OutputTypeJson {
+			outputExtendJson(cmd, validUntil)
+		} else if output == OutputTypeTable {
+			cmd.Println(fmt.Sprintf("Successfully extended user %s in %s", username, conn.Config.Host))
+			cmd.Println("\ncredentials")
+			cmd.Println("Valid until:", validUntil.Format("2006-01-02"))
+			cmd.Println("Username:", username)
+			cmd.Println("Hostname:", conn.Config.Host)
+			cmd.Println("Port:", conn.Config.Port)
+			cmd.Println("Database:", conn.Config.Database)
+		}
 	},
+}
+
+func outputExtendJson(cmd *cobra.Command, validUntil time.Time) {
+	b, err := json.MarshalIndent(struct {
+		ValidUntil string `json:"valid_until"`
+	}{
+		ValidUntil: validUntil.Format("2006-01-02"),
+	}, "", strings.Repeat(" ", 4))
+	if err != nil {
+		panic(err)
+	}
+
+	cmd.Println(string(b))
 }
 
 func init() {

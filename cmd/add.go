@@ -1,9 +1,12 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/spf13/cobra"
 	"os"
+	"strings"
+	"time"
 )
 
 var addCmd = &cobra.Command{
@@ -25,16 +28,50 @@ var addCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		cmd.Println(fmt.Sprintf("Successfully added user %s to %s", username, conn.Config.Host))
-		cmd.Println("\ncredentials")
-		cmd.Println("Valid until:", validUntil.Format("2006-01-02"))
-		cmd.Println("Roles:", roles)
-		cmd.Println("Username:", username)
-		cmd.Println("Password:", password)
-		cmd.Println("Hostname:", conn.Config.Host)
-		cmd.Println("Port:", conn.Config.Port)
-		cmd.Println("Database:", conn.Config.Database)
+		output := getOutputType(cmd)
+		if output == OutputTypeJson {
+			outputAddJson(cmd, validUntil, roles, username, password, conn.Config.Host, conn.Config.Port, conn.Config.Database)
+		} else if output == OutputTypeTable {
+			outputAddTable(cmd, validUntil, roles, username, password, conn.Config.Host, conn.Config.Port, conn.Config.Database)
+		}
 	},
+}
+
+func outputAddTable(cmd *cobra.Command, validUntil time.Time, roles []string, username, password, host, port, database string) {
+	cmd.Println(fmt.Sprintf("Successfully added user %s to %s", username, host))
+	cmd.Println("\ncredentials")
+	cmd.Println("Valid until:", validUntil.Format("2006-01-02"))
+	cmd.Println("Roles:", roles)
+	cmd.Println("Username:", username)
+	cmd.Println("Password:", password)
+	cmd.Println("Hostname:", host)
+	cmd.Println("Port:", port)
+	cmd.Println("Database:", database)
+}
+
+func outputAddJson(cmd *cobra.Command, validUntil time.Time, roles []string, username, password, host, port, database string) {
+	b, err := json.MarshalIndent(struct {
+		ValidUntil string   `json:"valid_until"`
+		Roles      []string `json:"roles"`
+		Username   string   `json:"username"`
+		Password   string   `json:"password"`
+		Hostname   string   `json:"hostname"`
+		Port       string   `json:"port"`
+		Database   string   `json:"database"`
+	}{
+		ValidUntil: validUntil.Format("2006-01-02"),
+		Roles:      roles,
+		Username:   username,
+		Password:   password,
+		Hostname:   host,
+		Port:       port,
+		Database:   database,
+	}, "", strings.Repeat(" ", 4))
+	if err != nil {
+		panic(err)
+	}
+
+	cmd.Println(string(b))
 }
 
 func init() {
