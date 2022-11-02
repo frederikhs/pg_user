@@ -11,8 +11,9 @@ Features
 - Deleting existing users
 - Extending the validity of existing users
 - Resetting passwords of existing users
-- Listing of existing users
+- Listing existing users and their associated roles
 - Listing all configured hosts
+- Listing existing roles 
 
 ## Installation
 

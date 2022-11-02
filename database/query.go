@@ -1,14 +1,17 @@
 package database
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/jmoiron/sqlx"
 	"time"
 )
 
 type User struct {
-	Username   string  `db:"usename"`
-	ValidUntil *string `db:"valuntil"`
+	Username   string   `db:"usename"`
+	ValidUntil *string  `db:"valuntil"`
+	RolesJson  string   `db:"roles"`
+	Roles      []string `db:"-"`
 }
 
 func (u *User) ParseValidUntil() (*string, error) {
@@ -30,7 +33,16 @@ func (u *User) ParseValidUntil() (*string, error) {
 
 func (conn *DBConn) GetAllUsers() ([]User, error) {
 	var users []User
-	err := conn.db.Select(&users, "SELECT usename, valuntil FROM pg_catalog.pg_user WHERE usesuper = false ORDER BY valuntil, usename")
+	err := conn.db.Select(&users, `
+	SELECT a.rolname           AS usename,
+		   a.rolvaliduntil     AS valuntil,
+		   json_agg(c.rolname) AS roles
+	FROM pg_roles a
+			 INNER JOIN pg_auth_members b ON a.oid = b.member
+			 INNER JOIN pg_roles c ON b.roleid = c.oid
+	GROUP BY 1, 2
+    ORDER BY 2, 1
+    `)
 	if err != nil {
 		return nil, err
 	}
@@ -42,9 +54,28 @@ func (conn *DBConn) GetAllUsers() ([]User, error) {
 		}
 
 		users[i].ValidUntil = validUntil
+
+		// convert postgres json aggregation to string slice
+		var roles []string
+		err = json.Unmarshal([]byte(users[i].RolesJson), &roles)
+		if err != nil {
+			return nil, err
+		}
+
+		users[i].Roles = roles
 	}
 
 	return users, nil
+}
+
+func (conn *DBConn) GetAllRoles() ([]string, error) {
+	var roles []string
+	err := conn.db.Select(&roles, "SELECT rolname FROM pg_roles ORDER BY rolname")
+	if err != nil {
+		return nil, err
+	}
+
+	return roles, nil
 }
 
 func (conn *DBConn) CreateUser(username string, validDuration time.Duration, roles []string) (string, time.Time, error) {

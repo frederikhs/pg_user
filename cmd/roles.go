@@ -5,13 +5,12 @@ import (
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
 	"os"
-	"strings"
 )
 
-var listCmd = &cobra.Command{
-	Use:   "list [host]",
-	Short: "List database users",
-	Long:  `List database users for a specific database`,
+var rolesCmd = &cobra.Command{
+	Use:   "roles [host]",
+	Short: "List database roles",
+	Long:  `List database roles for a specific database`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {
 			cmd.Println(cmd.UsageString())
@@ -26,22 +25,22 @@ var listCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		listUsersForConnection(conn)
+		listRolesForConnection(conn)
 	},
 }
 
-func listUsersForConnection(conn *database.DBConn) {
-	users, err := conn.GetAllUsers()
+func listRolesForConnection(conn *database.DBConn) {
+	roles, err := conn.GetAllRoles()
 	if err != nil {
 		panic(err)
 	}
 
 	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"username", "valid until", "roles"})
+	table.SetHeader([]string{"rolename"})
 
-	for _, u := range users {
+	for _, r := range roles {
 		table.Append([]string{
-			u.Username, *u.ValidUntil, strings.Join(u.Roles, ", "),
+			r,
 		})
 	}
 
@@ -49,5 +48,5 @@ func listUsersForConnection(conn *database.DBConn) {
 }
 
 func init() {
-	rootCmd.AddCommand(listCmd)
+	rootCmd.AddCommand(rolesCmd)
 }
