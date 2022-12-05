@@ -16,10 +16,22 @@ Features
 
 ## Installation
 
-1. Download the latest release for your distribution or architecture at the [releases page](https://github.com/frederikhs/pg_user/releases/latest). This can only be done while authenticated with github, and thus a simple curl in the terminal is not sufficient.
+### Linux amd64
 
-2. Move to a location in path
-   - eg. `$ sudo mv pg_user /usr/local/bin/pg_user`
+```bash
+# install
+curl -L https://github.com/frederikhs/pg_user/releases/latest/download/pg_user-linux-amd64.tar.gz -o pg_user.tar.gz
+tar -xvf pg_user.tar.gz
+sudo chmod +x pg_user
+sudo mv pg_user /usr/local/bin/pg_user
+
+# clean up
+rm pg_user.tar.gz
+```
+
+### Other
+
+Other distributions or OS visit the [releases page](https://github.com/frederikhs/pg_user/releases/latest)
 
 ## Configuration
 
