@@ -4,6 +4,7 @@ import (
 	"fmt"
 )
 
+// TryDomain is current just set to hiper.dk since I work at hiper
 var TryDomain = "hiper.dk"
 
 func HostEquals(a, b string) bool {
