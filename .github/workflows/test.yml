@@ -4,7 +4,7 @@ on: push
 jobs:
   test:
     name: Test
-    timeout-minutes: 5
+    timeout-minutes: 10
 
     strategy:
       fail-fast: false
@@ -29,6 +29,7 @@ jobs:
       - uses: golangci/golangci-lint-action@v3
         with:
           version: latest
+          args: --timeout=3m
       - run: go vet ./...
       - run: go test -race ./...
       - run: go build

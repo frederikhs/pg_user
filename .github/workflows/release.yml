@@ -9,6 +9,7 @@ on:
 jobs:
   releases-matrix:
     name: Release Go Binary
+    timeout-minutes: 10
     runs-on: ubuntu-latest
     strategy:
       matrix:
