@@ -38,3 +38,4 @@ jobs:
           goarch: ${{ matrix.goarch }}
           md5sum: FALSE
           ldflags: -X "main.appVersion=${{ env.APP_VERSION }}" -X "main.buildTime=${{ env.BUILD_TIME }}" -X main.gitCommit=${{ github.sha }} -X main.gitRef=${{ github.ref }}
+          asset_name: pg_user-${{ matrix.goos }}-${{ matrix.goarch }}
