@@ -1,7 +1,6 @@
 # pg_user
 
-[![Lint](https://github.com/frederikhs/pg_user/actions/workflows/golangci-lint.yml/badge.svg?branch=main)](https://github.com/frederikhs/pg_user/actions/workflows/lint.yml)
-[![Tests](https://github.com/frederikhs/pg_user/actions/workflows/go.yml/badge.svg?branch=main)](https://github.com/frederikhs/pg_user/actions/workflows/go.yml)
+[![Test](https://github.com/frederikhs/pg_user/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/frederikhs/pg_user/actions/workflows/test.yml)
 
 Is a cli application for managing postgres users.
 
