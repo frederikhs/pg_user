@@ -1,7 +1,7 @@
 # pg_user
 
-[![Lint](https://github.com/hiperdk/pg_user/actions/workflows/golangci-lint.yml/badge.svg?branch=main)](https://github.com/hiperdk/pg_user/actions/workflows/lint.yml)
-[![Tests](https://github.com/hiperdk/pg_user/actions/workflows/go.yml/badge.svg?branch=main)](https://github.com/hiperdk/pg_user/actions/workflows/go.yml)
+[![Lint](https://github.com/frederikhs/pg_user/actions/workflows/golangci-lint.yml/badge.svg?branch=main)](https://github.com/frederikhs/pg_user/actions/workflows/lint.yml)
+[![Tests](https://github.com/frederikhs/pg_user/actions/workflows/go.yml/badge.svg?branch=main)](https://github.com/frederikhs/pg_user/actions/workflows/go.yml)
 
 Is a cli application for managing postgres users.
 
@@ -17,7 +17,7 @@ Features
 
 ## Installation
 
-1. Download the latest release for your distribution or architecture at the [releases page](https://github.com/hiperdk/pg_user/releases/latest). This can only be done while authenticated with github, and thus a simple curl in the terminal is not sufficient.
+1. Download the latest release for your distribution or architecture at the [releases page](https://github.com/frederikhs/pg_user/releases/latest). This can only be done while authenticated with github, and thus a simple curl in the terminal is not sufficient.
 
 2. Move to a location in path
    - eg. `$ sudo mv pg_user /usr/local/bin/pg_user`

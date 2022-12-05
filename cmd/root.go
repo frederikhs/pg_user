@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/hiperdk/pg_user/database"
+	"github.com/frederikhs/pg_user/database"
 	"github.com/spf13/cobra"
 	"os"
 	"regexp"

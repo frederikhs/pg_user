@@ -1,4 +1,4 @@
-module github.com/hiperdk/pg_user
+module github.com/frederikhs/pg_user
 
 go 1.19
 

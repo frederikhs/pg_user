@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"encoding/json"
-	"github.com/hiperdk/pg_user/database"
+	"github.com/frederikhs/pg_user/database"
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
 	"os"

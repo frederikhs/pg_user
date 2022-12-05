@@ -3,7 +3,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/hiperdk/pg_user/database"
+	"github.com/frederikhs/pg_user/database"
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
 	"github.com/tg/pgpass"

@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/hiperdk/pg_user/cmd"
+	"github.com/frederikhs/pg_user/cmd"
 )
 
 const notSet string = "not set"
