@@ -2,6 +2,7 @@
 
 [![Release](https://img.shields.io/github/v/release/frederikhs/pg_user.svg)](https://github.com/frederikhs/pg_user/releases/latest)
 [![GoDoc](https://godoc.org/github.com/frederikhs/pg_user?status.svg)](https://godoc.org/github.com/frederikhs/pg_user)
+[![Quality](https://goreportcard.com/badge/github.com/frederikhs/pg_user)](https://goreportcard.com/report/github.com/frederikhs/pg_user)
 [![Test](https://github.com/frederikhs/pg_user/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/frederikhs/pg_user/actions/workflows/test.yml)
 
 Is a cli application for managing postgres users.
