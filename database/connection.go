@@ -22,18 +22,23 @@ type DBConn struct {
 	db     *sqlx.DB
 }
 
-func (config *DBConfig) Connect() *DBConn {
-	db, err := sqlx.Connect("postgres", fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable", config.Host, config.Port, config.User, config.Database, config.Pass))
+func (config *DBConfig) Connect(withSSL bool) *DBConn {
+	ssl := "require"
+	if !withSSL {
+		ssl = "disable"
+	}
+
+	db, err := sqlx.Connect("postgres", fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=%s", config.Host, config.Port, config.User, config.Database, config.Pass, ssl))
 	if err != nil {
 		log.Println("unable to connect to database:", err)
 		time.Sleep(time.Second * 5)
-		return config.Connect()
+		return config.Connect(withSSL)
 	}
 
 	if db.Ping() != nil {
 		log.Println("unable to connect to database:", err)
 		time.Sleep(time.Second * 5)
-		return config.Connect()
+		return config.Connect(withSSL)
 	}
 
 	return &DBConn{db: db, Config: config}

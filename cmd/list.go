@@ -21,7 +21,9 @@ var listCmd = &cobra.Command{
 
 		host := args[0]
 
-		conn := database.GetDatabaseEntryConnection(host)
+		withSSL := getUseSSL(cmd)
+
+		conn := database.GetDatabaseEntryConnection(host, withSSL)
 		if conn == nil {
 			cmd.Println("no hosts found by that name")
 			os.Exit(1)

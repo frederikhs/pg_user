@@ -19,7 +19,7 @@ func HostEquals(a, b string) bool {
 	return false
 }
 
-func GetDatabaseEntryConnection(hostQuery string) *DBConn {
+func GetDatabaseEntryConnection(hostQuery string, withSSL bool) *DBConn {
 	hosts, err := ListHosts()
 	if err != nil {
 		panic(err)
@@ -32,7 +32,7 @@ func GetDatabaseEntryConnection(hostQuery string) *DBConn {
 		}
 
 		config := MakeDbConfig(d.Hostname, d.Port, d.Username, d.Database)
-		return config.Connect()
+		return config.Connect(withSSL)
 	}
 
 	return nil

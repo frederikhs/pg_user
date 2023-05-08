@@ -28,6 +28,7 @@ func Execute(buildVersion string) {
 
 func init() {
 	rootCmd.PersistentFlags().StringP("output", "o", "", "--output json|table (optional default table)")
+	rootCmd.PersistentFlags().Bool("no-ssl", false, "do not use ssl when connecting")
 }
 
 func addRequiredHostFlag(cmd *cobra.Command) {
@@ -54,7 +55,9 @@ func givenUserModification(cmd *cobra.Command, args []string, userMustExist bool
 
 	username := args[0]
 
-	conn := database.GetDatabaseEntryConnection(host)
+	withSSL := getUseSSL(cmd)
+
+	conn := database.GetDatabaseEntryConnection(host, withSSL)
 	if conn == nil {
 		cmd.Println("no hosts found by that name")
 		os.Exit(1)
@@ -109,4 +112,14 @@ func getOutputType(cmd *cobra.Command) OutputType {
 		// for the compiler to be happy
 		return OutputTypeTable
 	}
+}
+
+func getUseSSL(cmd *cobra.Command) bool {
+	ssl, err := cmd.Flags().GetBool("no-ssl")
+	if err != nil {
+		cmd.Println(err)
+		os.Exit(1)
+	}
+
+	return !ssl
 }
