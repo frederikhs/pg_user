@@ -23,7 +23,7 @@ Features
 
 ```bash
 # install
-curl -L https://github.com/frederikhs/pg_user/releases/latest/download/pg_user-linux-amd64.tar.gz -o pg_user.tar.gz
+curl -L https://github.com/frederikhs/pg_user/releases/latest/download/pg_user_Linux_x86_64.tar.gz -o pg_user.tar.gz
 tar -xvf pg_user.tar.gz
 sudo chmod +x pg_user
 sudo mv pg_user /usr/local/bin/pg_user
