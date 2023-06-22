@@ -1,30 +1,18 @@
-name: Test
+name: test
 on: push
 
 jobs:
   test:
-    name: Test
+    name: test
     timeout-minutes: 10
-
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ ubuntu-latest, windows-latest, macos-latest ]
-        go: [ 1.17, 1.18, 1.19 ]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v3
         with:
-          check-latest: true
-          go-version: ${{ matrix.go }}
-      - uses: actions/cache@v3
-        with:
-          path: ~/go/pkg/mod
-          key: go-${{ runner.os }}-${{ matrix.go }}-${{ hashFiles('go.mod') }}
-          restore-keys: |
-            go-${{ runner.os }}-${{ matrix.go }}-
+          go-version-file: go.mod
+          cache: true
       - run: go mod download
       - uses: golangci/golangci-lint-action@v3
         with:

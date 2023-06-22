@@ -64,22 +64,11 @@ This repository is very plain and simple and development of the application only
 
 `$ go run main.go hosts` will compile the application and list all configured hosts in your `.pgpass` file.
 
-## Creating a new release
+## Release
 
-To create a new release of the application, a tag needs to be created first.
+release a new version by creating a tag and pushing it, then goreleaser will do the rest
 
-Look up existing tags
-
-`$ git tag -l`
-
-Choose the correct semantic versioning of the to be created release
-
-Tag commit for release
-
-`$ git tag vX.X.X`
-
-Push tag
-
-`$ git push origin vX.X.X`
-
-Now that the tag has been pushed, a release needs to be create using GitHub. After creating a new release the [release](.github/workflows/release.yml) workflow will compile binaries for major platforms and architectures and attach them to the release.
+```bash
+git tag -a v0.x.0 -m "v0.x.0"
+git push origin v0.x.0
+```

@@ -7,16 +7,15 @@ import (
 
 const notSet string = "not set"
 
-// these information will be collected when built, by `-ldflags "-X main.appVersion=v1.0.3"`
+// these information will be collected when built, by goreleaser
 var (
-	appVersion = notSet
-	buildTime  = notSet
-	gitCommit  = notSet
-	gitRef     = notSet
+	version = "dev"
+	commit  = "none"
+	date    = "unknown"
 )
 
 func buildVersion() string {
-	return fmt.Sprintf("%s, %s, %s, %s", appVersion, buildTime, gitCommit, gitRef)
+	return fmt.Sprintf("%s, %s, %s", version, commit, date)
 }
 
 func main() {
