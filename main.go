@@ -5,8 +5,6 @@ import (
 	"github.com/frederikhs/pg_user/cmd"
 )
 
-const notSet string = "not set"
-
 // these information will be collected when built, by goreleaser
 var (
 	version = "dev"
