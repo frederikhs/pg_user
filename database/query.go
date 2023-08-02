@@ -114,6 +114,11 @@ func (conn *DBConn) ExtendUser(username string, validDuration time.Duration) (ti
 		return time.Now(), err
 	}
 
+	// if users are expired, extend from now not their expiration
+	if current.Before(time.Now()) {
+		current = time.Now()
+	}
+
 	validUntil := current.Add(validDuration)
 
 	// at maximum give extend the valid until to 2 times the asked extension from now
