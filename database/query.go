@@ -34,14 +34,14 @@ func (u *User) ParseValidUntil() (*string, error) {
 func (conn *DBConn) GetAllUsers() ([]User, error) {
 	var users []User
 	err := conn.db.Select(&users, `
-	SELECT a.rolname           AS usename,
-		   a.rolvaliduntil     AS valuntil,
+	SELECT a.usename  AS usename,
+		   a.valuntil AS valuntil,
 		   json_agg(c.rolname) AS roles
-	FROM pg_roles a
-			 INNER JOIN pg_auth_members b ON a.oid = b.member
-			 INNER JOIN pg_roles c ON b.roleid = c.oid
+	FROM pg_user a
+			 LEFT JOIN pg_auth_members b ON a.usesysid = b.member
+			 LEFT JOIN pg_roles c ON b.roleid = c.oid
 	GROUP BY 1, 2
-    ORDER BY 2, 1
+	ORDER BY 1;
     `)
 	if err != nil {
 		return nil, err
