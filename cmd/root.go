@@ -39,8 +39,8 @@ func addRequiredHostFlag(cmd *cobra.Command) {
 	}
 }
 
-func givenUserModification(cmd *cobra.Command, args []string, userMustExist bool) (string, *database.DBConn) {
-	if len(args) != 1 {
+func givenUserModification(cmd *cobra.Command, argsLen int, args []string, userMustExist bool) (string, *database.DBConn) {
+	if len(args) != argsLen {
 		cmd.Println(cmd.UsageString())
 		os.Exit(1)
 	}

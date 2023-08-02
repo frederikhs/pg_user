@@ -81,7 +81,7 @@ func (conn *DBConn) GetAllRoles() ([]string, error) {
 func (conn *DBConn) CreateUser(username string, validDuration time.Duration, roles []string) (string, time.Time, error) {
 	tx := conn.db.MustBegin()
 
-	password := String(15)
+	password := RandString(15)
 
 	validUntil := time.Now().Add(validDuration)
 
@@ -133,9 +133,11 @@ func (conn *DBConn) ExtendUser(username string, validDuration time.Duration) (ti
 }
 
 func (conn *DBConn) ResetPassword(username string) (string, error) {
-	tx := conn.db.MustBegin()
+	return conn.SetPassword(username, RandString(15))
+}
 
-	password := String(15)
+func (conn *DBConn) SetPassword(username string, password string) (string, error) {
+	tx := conn.db.MustBegin()
 
 	sql := fmt.Sprintf("ALTER USER \"%s\" WITH PASSWORD '%s'", username, password)
 	tx.MustExec(sql)

@@ -8,30 +8,31 @@ import (
 	"strings"
 )
 
-var resetCmd = &cobra.Command{
-	Use:   "reset [username]",
-	Short: "Reset a database user's password",
-	Long:  `Reset a database user's password`,
+var passwordCmd = &cobra.Command{
+	Use:   "password [username] [password]",
+	Short: "Set a database user's password",
+	Long:  `Set a database user's password`,
 	Run: func(cmd *cobra.Command, args []string) {
-		username, conn := givenUserModification(cmd, 1, args, true)
+		username, conn := givenUserModification(cmd, 2, args, true)
+		password := args[1]
 
-		password, err := conn.ResetPassword(username)
+		password, err := conn.SetPassword(username, password)
 		if err != nil {
-			cmd.Println(fmt.Errorf("could not reset password for user: %v", err))
+			cmd.Println(fmt.Errorf("could not set password for user: %v", err))
 			os.Exit(1)
 		}
 
 		user, err := conn.GetUser(username)
 		if err != nil {
-			cmd.Println(fmt.Errorf("could not get user after password reset: %v", err))
+			cmd.Println(fmt.Errorf("could not get user after password set: %v", err))
 			os.Exit(1)
 		}
 
 		output := getOutputType(cmd)
 		if output == OutputTypeJson {
-			outputResetJson(cmd, password)
+			outputSetPasswordJson(cmd, password)
 		} else if output == OutputTypeTable {
-			cmd.Println(fmt.Sprintf("Successfully reset user password for %s in %s", username, conn.Config.Host))
+			cmd.Println(fmt.Sprintf("Successfully set user password for %s in %s", username, conn.Config.Host))
 			cmd.Println("\ncredentials")
 			cmd.Println("Valid until:", *user.ValidUntil)
 			cmd.Println("Username:", username)
@@ -43,7 +44,7 @@ var resetCmd = &cobra.Command{
 	},
 }
 
-func outputResetJson(cmd *cobra.Command, password string) {
+func outputSetPasswordJson(cmd *cobra.Command, password string) {
 	b, err := json.MarshalIndent(struct {
 		Password string `json:"password"`
 	}{
@@ -57,6 +58,6 @@ func outputResetJson(cmd *cobra.Command, password string) {
 }
 
 func init() {
-	rootCmd.AddCommand(resetCmd)
-	addRequiredHostFlag(resetCmd)
+	rootCmd.AddCommand(passwordCmd)
+	addRequiredHostFlag(passwordCmd)
 }

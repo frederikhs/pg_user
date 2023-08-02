@@ -14,7 +14,7 @@ var addCmd = &cobra.Command{
 	Short: "Add a database user",
 	Long:  `Add a database user to a specific database`,
 	Run: func(cmd *cobra.Command, args []string) {
-		username, conn := givenUserModification(cmd, args, false)
+		username, conn := givenUserModification(cmd, 1, args, false)
 
 		roles, err := cmd.Flags().GetStringSlice("roles")
 		if err != nil {

@@ -14,7 +14,7 @@ var extendCmd = &cobra.Command{
 	Short: "Extend a database user's valid",
 	Long:  `Extend a database user's valid until`,
 	Run: func(cmd *cobra.Command, args []string) {
-		username, conn := givenUserModification(cmd, args, true)
+		username, conn := givenUserModification(cmd, 1, args, true)
 
 		validUntil, err := conn.ExtendUser(username, DefaultValidUntil)
 		if err != nil {

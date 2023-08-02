@@ -13,7 +13,7 @@ var deleteCmd = &cobra.Command{
 	Short: "Delete a database user",
 	Long:  `Delete a database user from a specific database`,
 	Run: func(cmd *cobra.Command, args []string) {
-		username, conn := givenUserModification(cmd, args, true)
+		username, conn := givenUserModification(cmd, 1, args, true)
 
 		err := conn.DeleteUser(username)
 		if err != nil {
