@@ -3,8 +3,9 @@ package database
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/jmoiron/sqlx"
 	"time"
+
+	"github.com/jmoiron/sqlx"
 )
 
 type User struct {
@@ -180,6 +181,10 @@ func (conn *DBConn) GetUser(username string) (*User, error) {
 	return &user, err
 }
 
+func (conn *DBConn) BeginTransaction() *sqlx.Tx {
+	return conn.db.MustBegin()
+}
+
 func (conn *DBConn) AddRole(tx *sqlx.Tx, username string, roles []string) error {
 	for _, role := range roles {
 
@@ -198,6 +203,30 @@ func (conn *DBConn) AddRole(tx *sqlx.Tx, username string, roles []string) error 
 		}
 
 		sql := fmt.Sprintf("GRANT \"%s\" to \"%s\"", role, username)
+		tx.MustExec(sql)
+	}
+
+	return nil
+}
+
+func (conn *DBConn) RemoveRole(tx *sqlx.Tx, username string, roles []string) error {
+	for _, role := range roles {
+
+		roleExists, err := conn.RoleExist(role)
+		if err != nil {
+			err2 := tx.Rollback()
+			if err2 != nil {
+				return err2
+			}
+
+			return err
+		}
+
+		if !roleExists {
+			return fmt.Errorf("role does not exist: %s", role)
+		}
+
+		sql := fmt.Sprintf("REVOKE \"%s\" from \"%s\"", role, username)
 		tx.MustExec(sql)
 	}
 
