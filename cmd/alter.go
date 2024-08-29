@@ -51,10 +51,22 @@ var alterCmd = &cobra.Command{
 
 		tx := conn.BeginTransaction()
 
-		conn.AddRole(tx, username, add_roles)
-		conn.RemoveRole(tx, username, remove_roles)
+		err = conn.AddRole(tx, username, add_roles)
+		if err != nil {
+			cmd.Println(fmt.Errorf("could not add role: %v", err))
+			os.Exit(1)
+		}
+		err = conn.RemoveRole(tx, username, remove_roles)
+		if err != nil {
+			cmd.Println(fmt.Errorf("could not remove role: %v", err))
+			os.Exit(1)
+		}
 
-		tx.Commit()
+		err = tx.Commit()
+		if err != nil {
+			cmd.Println(fmt.Errorf("could not commit: %v", err))
+			os.Exit(1)
+		}
 
 		output := getOutputType(cmd)
 		if output == OutputTypeJson {
